@@ -92,12 +92,13 @@ then
 
     echo "Deploying the EPC docker containers, please wait ..."
     docker run --name prod-cassandra -d -e CASSANDRA_CLUSTER_NAME="OAI HSS Cluster" -e CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch cassandra:2.1
-    docker run --privileged --name prod-oai-hss -d oai-hss:production /bin/bash -c "sleep infinity"
+    docker run --privileged --name prod-oai-hss -d --entrypoint /bin/bash oai-hss:production -c "sleep infinity"
     docker network connect prod-oai-public-net prod-oai-hss
-    docker run --privileged --name prod-oai-mme --network prod-oai-public-net -d oai-mme:production /bin/bash -c "sleep infinity"
-    docker run --privileged --name prod-oai-spgwc --network prod-oai-public-net -d oai-spgwc:production /bin/bash -c "sleep infinity"
-    docker run --privileged --name prod-oai-spgwu-tiny --network prod-oai-public-net -d oai-spgwu-tiny:production /bin/bash -c "sleep infinity"
+    docker run --privileged --name prod-oai-mme --network prod-oai-public-net -d --entrypoint /bin/bash oai-mme:production -c "sleep infinity"
+    docker run --privileged --name prod-oai-spgwc --network prod-oai-public-net -d --entrypoint /bin/bash oai-spgwc:production -c "sleep infinity"
+    docker run --privileged --name prod-oai-spgwu-tiny --network prod-oai-public-net -d --entrypoint /bin/bash oai-spgwu-tiny:production -c "sleep infinity"
     docker run --privileged --name prod-trf-gen --network prod-oai-public-net -d trf-gen:production /bin/bash -c "sleep infinity"
+    
     sleep 10
     echo "Waiting for container deployment to complete ..."
 	
